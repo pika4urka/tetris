@@ -3,32 +3,45 @@
 #include <sstream>
 
 
-
-
 struct Figure2d {
 	unsigned int col, line;
-	bool fig[3][2];
+	bool** fig;
+	int status;
+
+	bool** fig1;
+	bool** fig2;
+	bool** fig3;
+	bool** fig4;
 };
 
 class figure
 {
 	Figure2d point;
-
-	bool checkLeft();
-	bool checkRight();
+	
+	void initialMatrix();
+	void deleteMatrix();
+	void updStatusForFig(int num);
+	void createFig4(const std::stringstream& ist);
 
 public:
 
 	figure()
 	{
-		initialFig();
+		initialMatrix();
+		createFig();
 	}
 
-	void initialFig();
+	~figure()
+	{
+		deleteMatrix();
+	}
 
+	void createFig();
 	void moveLeft();
 	void moveRight();
 	void moveDown();
+	void turn_left();
+	void turn_right();
 
 	Figure2d get_point();
 };

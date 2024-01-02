@@ -1,27 +1,18 @@
 ﻿#include <iostream>
-#include <random>
-#include <cstdlib>
 #include "map_console.h"
-#include <conio.h>
 #include "figure.h"
-
+#include <Windows.h>
 
 using namespace std;
 
 
 int main()
 {
-	/*int code;
-	code = _getch();
-	cout << code << endl;
-
-	while (code != 13)
-	{
-		code = _getch();
-		cout << code << endl;
-	}*/
-
-
+	system("color 07");
+	cout << "Controll: ASD\nTurn: QE\n";
+	cout << endl << "click any button to continue\n";
+	system("pause");
+	
 	map_console map;
 	try 
 	{
@@ -32,8 +23,11 @@ int main()
 	}
 	catch(exception& err)
 	{
-		cerr << err.what();
-		exit(0);
+		map_console::SetColor(4, 0);
+		cerr << endl << err.what();
+		map_console::SetColor(7, 0);
 	}
+
+	return 0;
 }
 
