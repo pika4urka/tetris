@@ -1,5 +1,6 @@
 ﻿  figure.cpp
   map_console.cpp
+C:\Users\Дмитрий\source\repos\oppo_sachet\oppo_sachet\map_console.cpp(142,25): warning C4101: err: неиспользованная локальная переменная
   oppo_sachet.cpp
   Создание кода...
   oppo_sachet.vcxproj -> C:\Users\Дмитрий\source\repos\oppo_sachet\x64\Debug\oppo_sachet.exe

@@ -5,7 +5,16 @@
 #include <Windows.h>
 
 
-void SetColor(int text, int bg) 
+
+void map_console::update()
+{
+	movefig();
+	update_MapVis();
+	visual();
+}
+
+
+void SetColor(int text, int bg)
 {
 	HANDLE hStdOut = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleTextAttribute(hStdOut, (WORD)((bg << 4) | text));
@@ -14,12 +23,73 @@ void SetColor(int text, int bg)
 
 void map_console::initial()
 {
-	for (int i = 0; i < 29; i++)
-		for (int j = 0; j < 20; j++)
+	for (int i = 0; i < 30; i++)
+		for (int j = 0; j < 22; j++)
 		{
-			map[i][j] = 0;
-			mapVis[i][j] = 0;
+			if (i == 29)
+			{
+				map[i][j] = 1;
+				mapVis[i][j] = 1;
+			}
+			else 
+			if ((j == 0) || (j == 21))
+			{
+				map[i][j] = 1;
+				mapVis[i][j] = 1;
+			}
+			else
+			{
+				map[i][j] = 0;
+				mapVis[i][j] = 0;
+			}
 		}
+}
+
+
+//дублирование кода
+
+bool map_console::checkLeft()
+{
+	auto point = fig.get_point();
+	int col = point.col;
+	int line = point.line;
+	bool flag = true;
+	
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 2; j++)
+			if ((point.fig[i][j] == true) && (map[line + i][col + j - 1] == true))
+				flag = false;
+	return flag;
+}
+
+
+bool map_console::checkRight()
+{
+	auto point = fig.get_point();
+	int col = point.col;
+	int line = point.line;
+	bool flag = true;
+
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 2; j++)
+			if ((point.fig[i][j] == true) && (map[line + i][col + j + 1] == true))
+				flag = false;
+	return flag;
+}
+
+
+bool map_console::checkDown()
+{
+	auto point = fig.get_point();
+	int col = point.col;
+	int line = point.line;
+	bool flag = true;
+
+	for (int i = 0; i < 3; i++)
+		for (int j = 0; j < 2; j++)
+			if ((point.fig[i][j] == true) && (map[line + i + 1][col + j] == true))
+				throw::std::exception("end");
+	return flag;
 }
 
 
@@ -29,8 +99,7 @@ void map_console::visual()
 
 	for (int i = 0; i < 29; i++)
 	{
-		//std::cout << "\t\t\t\t\t\t";
-		for (int j = 0; j < 20; j++)
+		for (int j = 1; j < 21; j++)
 		{
 			if (mapVis[i][j] == 0)
 				SetColor(14, 0);
@@ -46,40 +115,36 @@ void map_console::visual()
 void map_console::movefig()
 {
 
-	/*int code = _getch();
-
-	switch (code)
-	{
-	case 97:
-		fig.moveLeft();
-	}*/
 
 	int code = _getch();
 	try
 	{
 		switch (code)
 		{
+		case 228:
 		case 97:
-			fig.moveLeft();
+			if (checkLeft())
+				fig.moveLeft();
 			break;
 
+		case 162:
 		case 100:
-			fig.moveRight();
+			if (checkRight())
+				fig.moveRight();
 			break;
 
 		default:
-			fig.moveDown();
+			if (checkDown())
+				fig.moveDown();
 			break;
 		}
 	}
 	catch (std::exception& err)
 	{
+		update_MapDefault();
+		fig.initialFig();
 		update_MapVis();
 		visual();
-		SetColor(7, 0);
-		throw::std::exception(err.what());
-
-		// ...#################################################create new def map
 	}
 	
 	//...######################################################create next fig
@@ -89,26 +154,23 @@ void map_console::movefig()
 void map_console::update_MapVis()
 {
 	for (int i = 0; i < 29; i++)
-		for (int j = 0; j < 20; j++)
+		for (int j = 1; j < 21; j++)
 			mapVis[i][j] = map[i][j];
 
+	auto point = fig.get_point();
+	int col = point.col, line = point.line;
 	{
-		auto point = fig.get_point();
-		int col = point.col, line = point.line;
-		//coord for figure
-		{
-			mapVis[line][col] = 1;
-			mapVis[line + 1][col] = 1;
-			mapVis[line + 2][col] = 1;
-			mapVis[line + 2][col + 1] = 1;
-		}
+		for (int i = 0; i < 3; i++)
+			for (int j = 0; j < 2; j++)
+				mapVis[line + i][col + j] = mapVis[line + i][col + j] or point.fig[i][j];
 	}
+
 }
 
 
-//void map_console::check_conflict()
-//{
-//	auto vec = fig.get_point();
-//
-//	if (map[vec.at()][vec.at()])
-//}
+void map_console::update_MapDefault()
+{
+	for (int i = 0; i < 29; i++)
+		for (int j = 1; j < 21; j++)
+			map[i][j] = mapVis[i][j];
+}

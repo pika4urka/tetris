@@ -4,18 +4,20 @@
 
 class map_console
 {
-	bool map[29][20];
-	bool mapVis[29][20];
+	bool map[30][22];
+	bool mapVis[30][22];
 	//bool status;
 
 	figure fig;
 
 	void initial();
 	void update_MapVis();
+	void update_MapDefault();
 
 	bool checkLeft();
 	bool checkRight();
 	bool checkDown();
+	//void checkLine();
 
 public:
 
